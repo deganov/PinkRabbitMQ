@@ -26,9 +26,10 @@ ConnectionImpl::~ConnectionImpl() {
     }
     LOGD("event_base_loopbreak");
     event_base_loopbreak(eventLoop);
-     LOGD("thread");
+    LOGD("thread");
+    breakloop = true;
     thread.join();
-      LOGD("delete connection");
+    LOGD("delete connection");
     delete connection;
     LOGD("delete handler");
     delete handler;
@@ -39,7 +40,7 @@ ConnectionImpl::~ConnectionImpl() {
 
 void ConnectionImpl::loopThread(ConnectionImpl* thiz) {
     event_base* loop = thiz->eventLoop;
-    while(!thiz->connection->closed()) {
+    while(!thiz->connection->closed() && !breakloop) {
         event_base_loop(loop, EVLOOP_NONBLOCK);
     }
 }
