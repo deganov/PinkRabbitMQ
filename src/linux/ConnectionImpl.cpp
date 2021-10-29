@@ -30,7 +30,6 @@ ConnectionImpl::~ConnectionImpl() {
     LOGD("event_base_loopbreak");
     event_base_loopbreak(eventLoop);
     LOGD("thread");
-    breakloop = true;
     thread.join();
     LOGD("delete connection");
     delete connection;
