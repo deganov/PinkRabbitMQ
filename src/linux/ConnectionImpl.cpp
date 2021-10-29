@@ -24,6 +24,9 @@ ConnectionImpl::~ConnectionImpl() {
     while (connection->usable()) {
         connection->close();
     }
+    if (!connection->closed()) {
+        connection->close(true);
+    }
     LOGD("event_base_loopbreak");
     event_base_loopbreak(eventLoop);
     LOGD("thread");
@@ -35,15 +38,12 @@ ConnectionImpl::~ConnectionImpl() {
     delete handler;
     LOGD("event_base_free");
     event_base_free(eventLoop);
-    LOGD("delete end");
 }
 
 void ConnectionImpl::loopThread(ConnectionImpl* thiz) {
     event_base* loop = thiz->eventLoop;
-    while(!thiz->connection->closed() && !thiz->breakloop) {
-        LOGD("event_base_loop_start");
+    while(!thiz->connection->closed()) {
         event_base_loop(loop, EVLOOP_NONBLOCK);
-        LOGD("event_base_loop_stop");
     }
 }
 

@@ -26,6 +26,5 @@ private:
 
     std::unique_ptr<AMQP::TcpChannel> trChannel;
     std::thread thread;
-    bool breakloop;
 };
 
