@@ -18,23 +18,23 @@ ConnectionImpl::ConnectionImpl(const AMQP::Address& address) :
 }
 
 ConnectionImpl::~ConnectionImpl() {
-    LOGD('closeChannel');
+    LOGD("closeChannel");
     closeChannel(trChannel);
-    LOGD('while');
+    LOGD("while");
     while (connection->usable()) {
         connection->close();
     }
-    LOGD('event_base_loopbreak');
+    LOGD("event_base_loopbreak");
     event_base_loopbreak(eventLoop);
-     LOGD('thread');
+     LOGD("thread");
     thread.join();
-      LOGD('delete connection');
+      LOGD("delete connection");
     delete connection;
-    LOGD('delete handler');
+    LOGD("delete handler");
     delete handler;
-    LOGD('event_base_free');
+    LOGD("event_base_free");
     event_base_free(eventLoop);
-    LOGD('delete end');
+    LOGD("delete end");
 }
 
 void ConnectionImpl::loopThread(ConnectionImpl* thiz) {
