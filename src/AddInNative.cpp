@@ -1,4 +1,4 @@
-
+ 
 #include "RabbitMQClientNative.h"
 
 #pragma warning( disable : 4267)
