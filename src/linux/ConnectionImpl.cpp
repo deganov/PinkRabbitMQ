@@ -40,7 +40,7 @@ ConnectionImpl::~ConnectionImpl() {
 
 void ConnectionImpl::loopThread(ConnectionImpl* thiz) {
     event_base* loop = thiz->eventLoop;
-    while(!thiz->connection->closed() && !breakloop) {
+    while(!thiz->connection->closed() && !thiz->breakloop) {
         LOGD("event_base_loop_start");
         event_base_loop(loop, EVLOOP_NONBLOCK);
         LOGD("event_base_loop_stop");
