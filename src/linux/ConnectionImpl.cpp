@@ -18,30 +18,23 @@ ConnectionImpl::ConnectionImpl(const AMQP::Address& address) :
 }
 
 ConnectionImpl::~ConnectionImpl() {
-   // LOGD("closeChannel");
     closeChannel(trChannel);
-    //LOGD("while");
     while (connection->usable()) {
         connection->close();
     }
     if (!connection->closed()) {
         connection->close(true);
     }
-    ///LOGD("event_base_loopbreak");
     event_base_loopbreak(eventLoop);
-    //LOGD("thread");
     thread.join();
-   // LOGD("delete connection");
     delete connection;
-    //LOGD("delete handler");
     delete handler;
-    //LOGD("event_base_free");
     event_base_free(eventLoop);
 }
 
 void ConnectionImpl::loopThread(ConnectionImpl* thiz) {
     event_base* loop = thiz->eventLoop;
-    while(!thiz->connection->closed()) {
+    while(!thiz->connection->usable() && !thiz->connection->closed()) {
         event_base_loop(loop, EVLOOP_NONBLOCK);
     }
 }
@@ -94,7 +87,7 @@ void ConnectionImpl::closeChannel(std::unique_ptr<AMQP::TcpChannel>& channel) {
 
 
 void ConnectionImpl::connect() {    
-    const uint16_t timeout = 5000;
+    const uint16_t timeout = 10000;
     std::chrono::milliseconds timeoutMs{ timeout };
     auto end = std::chrono::system_clock::now() + timeoutMs;
     while (!connection->ready() &&  !connection->closed() && (end - std::chrono::system_clock::now()).count() > 0) {
