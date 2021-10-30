@@ -18,24 +18,24 @@ ConnectionImpl::ConnectionImpl(const AMQP::Address& address) :
 }
 
 ConnectionImpl::~ConnectionImpl() {
-    LOGD("closeChannel");
+   // LOGD("closeChannel");
     closeChannel(trChannel);
-    LOGD("while");
+    //LOGD("while");
     while (connection->usable()) {
         connection->close();
     }
     if (!connection->closed()) {
         connection->close(true);
     }
-    LOGD("event_base_loopbreak");
+    ///LOGD("event_base_loopbreak");
     event_base_loopbreak(eventLoop);
-    LOGD("thread");
+    //LOGD("thread");
     thread.join();
-    LOGD("delete connection");
+   // LOGD("delete connection");
     delete connection;
-    LOGD("delete handler");
+    //LOGD("delete handler");
     delete handler;
-    LOGD("event_base_free");
+    //LOGD("event_base_free");
     event_base_free(eventLoop);
 }
 
@@ -48,28 +48,38 @@ void ConnectionImpl::loopThread(ConnectionImpl* thiz) {
 
 
 void ConnectionImpl::openChannel(std::unique_ptr<AMQP::TcpChannel>& channel) {
+    LOGD("1");
     if (channel) {
+        LOGD("2");
         closeChannel(channel);
+        LOGD("3");
     }
+    LOGD("4");
     if (!connection->usable()) {
         throw Biterp::Error("Connection lost");
     }
     std::mutex m;
     std::condition_variable cv;
     bool ready = false;
-
+    LOGD("5");
     channel.reset(new AMQP::TcpChannel(connection));
+    LOGD("6");
     channel->onReady([&]() {
+        LOGD("7");
         std::unique_lock<std::mutex> lock(m);
         ready = true;
         cv.notify_all();
         });
     channel->onError([this, &channel](const char* message) {
+        LOGD("8");
         LOGW("Channel closed with reason: " + std::string(message));
         channel.reset(nullptr);
         });
+        LOGD("9");
     std::unique_lock<std::mutex> lock(m);
-    cv.wait(lock, [&] { return ready; });
+    LOGD("10");
+    cv.wait(lock, [&] {LOGD("12"); return ready; });
+    LOGD("11");
     if (!channel) {
         throw Biterp::Error("Channel not opened");
     }
