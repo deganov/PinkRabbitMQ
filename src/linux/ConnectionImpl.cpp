@@ -34,7 +34,7 @@ ConnectionImpl::~ConnectionImpl() {
 
 void ConnectionImpl::loopThread(ConnectionImpl* thiz) {
     event_base* loop = thiz->eventLoop;
-    while(!thiz->connection->usable() && !thiz->connection->closed()) {
+    while(thiz->connection->usable() && !thiz->connection->closed()) {
         event_base_loop(loop, EVLOOP_NONBLOCK);
     }
 }
