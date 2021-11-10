@@ -29,6 +29,7 @@ ConnectionImpl::~ConnectionImpl() {
     thread.join();
     delete connection;
     delete handler;
+
     event_base_free(eventLoop);
 }
 
@@ -41,38 +42,28 @@ void ConnectionImpl::loopThread(ConnectionImpl* thiz) {
 
 
 void ConnectionImpl::openChannel(std::unique_ptr<AMQP::TcpChannel>& channel) {
-    LOGD("1");
     if (channel) {
-        LOGD("2");
         closeChannel(channel);
-        LOGD("3");
     }
-    LOGD("4");
     if (!connection->usable()) {
         throw Biterp::Error("Connection lost");
     }
     std::mutex m;
     std::condition_variable cv;
     bool ready = false;
-    LOGD("5");
+
     channel.reset(new AMQP::TcpChannel(connection));
-    LOGD("6");
     channel->onReady([&]() {
-        LOGD("7");
         std::unique_lock<std::mutex> lock(m);
         ready = true;
         cv.notify_all();
         });
     channel->onError([this, &channel](const char* message) {
-        LOGD("8");
         LOGW("Channel closed with reason: " + std::string(message));
         channel.reset(nullptr);
         });
-        LOGD("9");
     std::unique_lock<std::mutex> lock(m);
-    LOGD("10");
-    cv.wait(lock, [&] {LOGD("12"); return ready; });
-    LOGD("11");
+    cv.wait(lock, [&] { return ready; });
     if (!channel) {
         throw Biterp::Error("Channel not opened");
     }
