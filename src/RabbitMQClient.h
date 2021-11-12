@@ -27,7 +27,13 @@ public:
 public:
 	RabbitMQClient() : Biterp::Component("RabbitMQClient"), priority(0), inConsume(false) {};
 
-	virtual ~RabbitMQClient() { clear(); };
+	virtual ~RabbitMQClient() {};
+
+	virtual void done() {
+            LOGD("done new start");
+			clear();
+			LOGD("done new end");
+        }
 
 	inline bool connect(tVariant* paParams, const long lSizeArray) {
 		return wrapCall(this, &RabbitMQClient::connectImpl, paParams, lSizeArray);
