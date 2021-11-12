@@ -33,7 +33,7 @@ public:
             LOGD("done new start");
 			try
 			{
-				clear();
+				clear(true);
 			}
 			catch(const std::exception& e)
 			{
@@ -141,7 +141,7 @@ private:
 	void checkConnection();
 	string lastMessageHeaders();
 
-	void clear();
+	void clear(bool done = false);
 
 private:
 	struct MessageObject {
