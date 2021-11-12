@@ -31,7 +31,21 @@ public:
 
 	virtual void done() {
             LOGD("done new start");
-			clear();
+			try
+			{
+				clear();
+			}
+			catch(const std::exception& e)
+			{
+			 	string who = typeid(e).name();
+                string what = e.what();
+                LOGE(who + ": " + what);
+                addError(what, who);
+            }
+            catch (...) {
+                LOGE("Unknown excp" + ": " + "");    
+            }
+			
 			LOGD("done new end");
         }
 
@@ -169,6 +183,9 @@ private:
 			LOGE(who + ": " + what);
 			addError(what, who);
 		}
+		catch (...) {
+                LOGE("Unknown excp" + ": " + "");    
+            }
 		return result;
 	}
 

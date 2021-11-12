@@ -1,5 +1,11 @@
 {
     "files.associations": {
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "xstring": "cpp",
+        "atomic": "cpp",
+        "forward_list": "cpp",
+        "typeinfo": "cpp",
+        "xmemory": "cpp",
+        "xutility": "cpp"
     }
 }
