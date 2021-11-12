@@ -340,18 +340,23 @@ void RabbitMQClient::basicConsumeMessageImpl(Biterp::CallContext& ctx) {
 }
 
 void RabbitMQClient::clear() {
+	LOGD("Clear begin");
 	if (!consumers.empty() && connection) {
+		LOGD("cancel chanel begin");
 		AMQP::Channel* ch = connection->readChannel();
 		ch->startTransaction();
 		for (auto& tag : consumers) {
+			LOGD("cancel chanel startTransaction");
 			ch->cancel(tag);
 		}	
 		ch->commitTransaction()
 			.onFinalize([&]() {
 				ch->close();
 				connection->loopbreak();
+				LOGD("cancel chanel commitTransaction");
 			});
 		connection->loop();
+		LOGD("cancel chanel end");
 	}
 	consumers.clear();
 	unique_lock<mutex> lock(_mutex);
@@ -361,6 +366,7 @@ void RabbitMQClient::clear() {
 		cvDataArrived.notify_all();
 		this_thread::sleep_for(chrono::seconds(1));
 	}
+	LOGD("Clear end");
 }
 
 void RabbitMQClient::basicCancelImpl(Biterp::CallContext& ctx) {
