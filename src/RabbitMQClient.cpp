@@ -339,7 +339,7 @@ void RabbitMQClient::basicConsumeMessageImpl(Biterp::CallContext& ctx) {
 	inConsume = false;
 }
 
-void RabbitMQClient::clear(bool done = false) {
+void RabbitMQClient::clear(bool done) {
 	LOGD("Clear begin");
 	if (!consumers.empty() && connection) {
 		LOGD("cancel chanel begin");
