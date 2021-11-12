@@ -343,6 +343,7 @@ void RabbitMQClient::clear() {
 	LOGD("Clear begin");
 	if (!consumers.empty() && connection) {
 		LOGD("cancel chanel begin");
+		consumers.clear();
 		AMQP::Channel* ch = connection->readChannel();
 		ch->startTransaction();
 		for (auto& tag : consumers) {
@@ -358,7 +359,6 @@ void RabbitMQClient::clear() {
 		connection->loop();
 		LOGD("cancel chanel end");
 	}
-	consumers.clear();
 	unique_lock<mutex> lock(_mutex);
 	queue<MessageObject> empty;
 	messageQueue.swap(empty);
