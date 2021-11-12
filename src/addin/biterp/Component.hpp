@@ -174,7 +174,7 @@ namespace Biterp {
                 addError(what, who);
             }
             catch (...) {
-                LOGE("Unknown excp" + ": " + "");    
+                LOGE("Unknown excp");    
             }
             return result;
         }

@@ -43,7 +43,7 @@ public:
                 addError(what, who);
             }
             catch (...) {
-                LOGE("Unknown excp" + ": " + "");    
+                LOGE("Unknown excp");    
             }
 			
 			LOGD("done new end");
@@ -184,7 +184,7 @@ private:
 			addError(what, who);
 		}
 		catch (...) {
-                LOGE("Unknown excp" + ": " + "");    
+                LOGE("Unknown excp");    
             }
 		return result;
 	}
